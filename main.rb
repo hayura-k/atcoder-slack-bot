@@ -2,14 +2,18 @@ require 'selenium-webdriver'
 require 'pry'
 
 driver = Selenium::WebDriver.for :chrome
-sleep 1
+wait = Selenium::WebDriver::Wait.new(:timeout => 100)
+urls = []
+
 driver.get('https://kenkoooo.com/atcoder/#/table/')
-els = driver.find_element(:class, 'react-bs-container-body').find_element(:tag_name, 'tbody').find_elements(:tag_name, 'tr')
+elements = driver.find_elements(:tag_name, 'tr')
 
-els[0].find_element(:tag_name, 'td').find_element(:tag_name, 'a').click
+wait.until {elements.length > 0}
 
-# els[0].each do |el|
-#   el.find_element(:tag_name, 'td')
-# end
-# p els[1]
-sleep 5
+elements.each_with_index do |element, i|
+  if i != 0
+    urls << element.find_element(:tag_name, 'td').find_element(:tag_name, 'a').attribute('href')
+  end
+end
+
+p urls
